@@ -8,7 +8,7 @@ import IsometricCamera from './IsometricCamera';
 
 const initialItems = [
   { id: 1, type: 'clean_bottle', path: './clean_bottle.gltf', position: [0, 1, 0] },
-  { id: 2, type: 'dirty_bottle', path: './dirty_bottle.gltf', position: [2, 1, 0] },
+  { id: 2, type: 'dirty_bottle', path: './clean_bottle.gltf', position: [2, 1, 0] },
 ];
 
 function Game() {

@@ -18,12 +18,13 @@ const App = () => {
   const [splineInstance, setSplineInstance] = useState(null); // Store the Spline instance
   const [hearts, setHearts] = useState([true, true, true]); // Start with 3 full hearts
 
-  const NEWSPAPER_FLAG = 200;
-  const MASON_JAR_FLAG = 300;
-  const CAN_FLAG = 100;
+  const NEWSPAPER_FLAG = 100;
+  const MASON_JAR_FLAG = 200;
+  const CAN_FLAG = 300;
 
   // Function to start a new level
   const startNewLevel = () => {
+    console.log("startNewLevel called");
     const randomValue = Math.floor(Math.random() * 3) * 100 + 100;
     setTargetCharacter(randomValue);
     console.log(randomValue);
@@ -64,8 +65,6 @@ const App = () => {
   useEffect(() => {
     if (splineInstance) {
       console.log("useEffect called after splineInstance is set");
-      // Set background color and variables
-      splineInstance.setBackgroundColor("lightblue");
       // log x y and z values
       console.log(
         "newspaper: " + newspaper[0] + ", " + newspaper[1] + ", " + newspaper[2]
@@ -85,42 +84,55 @@ const App = () => {
       });
 
       // Add collision event listener
-      splineInstance.addEventListener("collision", (e) => {
+      splineInstance.addEventListener("collision", async (e) => {
+        const levelComplete = await splineInstance.getVariable("level_complete");
         console.log("collision event detected");
-        console.log(
-          "level complete: " + splineInstance.getVariable("level_complete")
-        );
-        if (splineInstance.getVariable("level_complete")) {
-          // splineInstance.stop();
-          // Display success message
-          setPopupMessage("Success!");
-          setPopupVisible(true);
-          setScore((prevScore) => prevScore + time);
-          splineInstance.setVariables({ level_complete: false });
+        console.log("level complete: " + levelComplete);
+        console.log("target character: " + targetCharacter);
+        console.log("collided object name: " + e.target.name);
 
-          // Move going to the next level after the timeout has completed
-          setTimeout(() => {
-            startNewLevel();
-            setPopupVisible(false);
-            // Start a new level
-            splineInstance.emitEvent("mouseUp", "clock");
-            // splineInstance.play();
-            console.log("reset emitted");
-          }, 4000);
-        } else {
-          // If the collision was incorrect
-          const newHearts = hearts.slice();
-          const firstFullHeartIndex = newHearts.findIndex(
-            (heart) => heart === true
-          );
-          if (firstFullHeartIndex !== -1) {
-            newHearts[firstFullHeartIndex] = false;
-            setHearts(newHearts);
-          }
+        const collidedObjectName = e.target.name;
+
+        if (
+          (targetCharacter === NEWSPAPER_FLAG && collidedObjectName === "Cube 9") ||
+          (targetCharacter === MASON_JAR_FLAG && collidedObjectName === "Cube 8") ||
+          (targetCharacter === CAN_FLAG && collidedObjectName === "Cube 7")
+        ) {
+          console.log("Correct object collided");
+          handleSuccess();
+          } else {
+            console.log("Incorrect object collided");
+          handleFailure();
         }
       });
     }
-  }, [newspaper, masonJar, can, targetCharacter, splineInstance, hearts]);
+  }, [newspaper, masonJar, can, targetCharacter, splineInstance]);
+
+  const handleSuccess = async () => {
+    setPopupMessage("Success!");
+    setPopupVisible(true);
+    setScore((prevScore) => prevScore + time);
+    await splineInstance.setVariables({ level_complete: false });
+
+    // Move going to the next level after the timeout has completed
+    setTimeout(() => {
+      startNewLevel();
+      setPopupVisible(false);
+      // Start a new level
+      splineInstance.emitEvent("mouseUp", "clock");
+      console.log("reset emitted");
+    }, 4000);
+  };
+
+  const handleFailure = () => {
+    // If the collision was incorrect
+    const newHearts = hearts.slice();
+    const firstFullHeartIndex = newHearts.findIndex((heart) => heart === true);
+    if (firstFullHeartIndex !== -1) {
+      newHearts[firstFullHeartIndex] = false;
+      setHearts(newHearts);
+    }
+  };
 
   const onLoad = (spline) => {
     console.log("onLoad function called");
@@ -146,3 +158,160 @@ const App = () => {
 };
 
 export default App;
+
+
+
+
+// OLD BELOW
+// import React, { useState, useEffect } from "react";
+// import Spline from "@splinetool/react-spline";
+// import "./App.css";
+// import Scoreboard from "./Scoreboard";
+// import Timer from "./Timer";
+// import Popup from "./Popup";
+// import Heart from "./Heart";
+
+// const App = () => {
+//   const [time, setTime] = useState(120); // Start from 2 minutes
+//   const [targetCharacter, setTargetCharacter] = useState(0);
+//   const [newspaper, setNewspaper] = useState([0, 0, 0]);
+//   const [masonJar, setMasonJar] = useState([0, 0, 0]);
+//   const [can, setCan] = useState([0, 0, 0]);
+//   const [score, setScore] = useState(0); // Keep track of the score
+//   const [popupVisible, setPopupVisible] = useState(false);
+//   const [popupMessage, setPopupMessage] = useState("");
+//   const [splineInstance, setSplineInstance] = useState(null); // Store the Spline instance
+//   const [hearts, setHearts] = useState([true, true, true]); // Start with 3 full hearts
+//   const [collisionHandled, setCollisionHandled] = useState(false); // Track if collision was handled
+
+//   const NEWSPAPER_FLAG = 200;
+//   const MASON_JAR_FLAG = 300;
+//   const CAN_FLAG = 100;
+
+//   // Function to start a new level
+//   const startNewLevel = () => {
+//     const randomValue = Math.floor(Math.random() * 3) * 100 + 100;
+//     setTargetCharacter(randomValue);
+//     console.log(randomValue);
+
+//     if (randomValue === NEWSPAPER_FLAG) {
+//       setNewspaper([2.6, 2.7, 2.51]);
+//       setMasonJar([0, 0, 0]);
+//       setCan([0, 0, 0]);
+//     } else if (randomValue === MASON_JAR_FLAG) {
+//       setNewspaper([0, 0, 0]);
+//       setMasonJar([2.4, 2.4, 2.4]);
+//       setCan([0, 0, 0]);
+//     } else {
+//       setNewspaper([0, 0, 0]);
+//       setMasonJar([0, 0, 0]);
+//       setCan([1, 1, 1]);
+//     }
+
+//     setTime(120); // Reset timer to 2 minutes
+//   };
+
+//   useEffect(() => {
+//     startNewLevel(); // Start the first level
+
+//     const timer = setInterval(() => {
+//       setTime((prevTime) => {
+//         if (prevTime === 0) {
+//           clearInterval(timer);
+//           return 0;
+//         }
+//         return prevTime - 1;
+//       });
+//     }, 1000);
+
+//     return () => clearInterval(timer);
+//   }, []);
+
+//   useEffect(() => {
+//     if (splineInstance) {
+//       console.log("useEffect called after splineInstance is set");
+//       // log x y and z values
+//       console.log(
+//         "newspaper: " + newspaper[0] + ", " + newspaper[1] + ", " + newspaper[2]
+//       );
+//       console.log("can: " + can[0] + ", " + can[1] + ", " + can[2]);
+//       splineInstance.setVariables({
+//         target_character: targetCharacter,
+//         newspaper_x: newspaper[0],
+//         newspaper_y: newspaper[1],
+//         newspaper_z: newspaper[2],
+//         mason_jar_x: masonJar[0],
+//         mason_jar_y: masonJar[1],
+//         mason_jar_z: masonJar[2],
+//         can_x: can[0],
+//         can_y: can[1],
+//         can_z: can[2],
+//       });
+
+//       // Add collision event listener
+//       splineInstance.addEventListener("collision", async (e) => {
+//         if (!collisionHandled) {
+//           setCollisionHandled(true); // Mark collision as handled
+//           console.log("collision event detected");
+
+//           const levelComplete = await splineInstance.getVariable("level_complete");
+//           console.log("level complete: " + levelComplete);
+
+//           if (levelComplete) {
+//             // Display success message
+//             setPopupMessage("Success!");
+//             setPopupVisible(true);
+//             setScore((prevScore) => prevScore + time);
+//             await splineInstance.setVariables({ level_complete: false });
+
+//             // Move going to the next level after the timeout has completed
+//             setTimeout(() => {
+//               startNewLevel();
+//               setPopupVisible(false);
+//               // Start a new level
+//               splineInstance.emitEvent("mouseUp", "clock");
+//               console.log("reset emitted");
+//             }, 4000);
+//           } else {
+//             // If the collision was incorrect
+//             const newHearts = hearts.slice();
+//             const firstFullHeartIndex = newHearts.findIndex(
+//               (heart) => heart === true
+//             );
+//             if (firstFullHeartIndex !== -1) {
+//               newHearts[firstFullHeartIndex] = false;
+//               setHearts(newHearts);
+//             }
+//           }
+
+//           // Reset collisionHandled after a short delay to allow for new collisions
+//           setTimeout(() => setCollisionHandled(false), 2000);
+//         }
+//       });
+//     }
+//   }, [newspaper, masonJar, can, targetCharacter, splineInstance, hearts]);
+
+//   const onLoad = (spline) => {
+//     console.log("onLoad function called");
+//     setSplineInstance(spline); // Store the Spline instance
+//   };
+
+//   return (
+//     <div className="container">
+//       <Spline
+//         scene="https://prod.spline.design/QIhWCVfzQaL7jMhB/scene.splinecode"
+//         onLoad={onLoad}
+//       />
+//       <Scoreboard score={score} />
+//       <Timer time={time} />
+//       <div className="hearts">
+//         {hearts.map((isFull, index) => (
+//           <Heart key={index} isFull={isFull} />
+//         ))}
+//       </div>
+//       <Popup message={popupMessage} visible={popupVisible} />
+//     </div>
+//   );
+// };
+
+// export default App;

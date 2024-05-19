@@ -23,4 +23,8 @@
   font-weight: bold;
   color: white;
   margin-top: 20px;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }

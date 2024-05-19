@@ -3,7 +3,8 @@ import Spline from "@splinetool/react-spline";
 import "./App.css";
 import Scoreboard from "./Scoreboard";
 import Timer from "./Timer";
-import Popup from "./Popup";
+import SuccessPopup from "./SuccessPopup";
+import FailurePopup from "./FailurePopup";
 import Heart from "./Heart";
 import StartMenu from "./StartMenu";
 
@@ -15,7 +16,7 @@ const App = () => {
   const [can, setCan] = useState([0, 0, 0]);
   const [score, setScore] = useState(0); // Keep track of the score
   const [popupVisible, setPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
+  const [failurePopupVisible, setFailurePopupVisible] = useState(false);
   const [splineInstance, setSplineInstance] = useState(null); // Store the Spline instance
   const [hearts, setHearts] = useState([true, true, true]); // Start with 3 full hearts
   const [isGameStarted, setIsGameStarted] = useState(false); // Manage the start menu visibility
@@ -97,7 +98,6 @@ const App = () => {
         if (splineInstance.getVariable("level_complete")) {
           // splineInstance.stop();
           // Display success message
-          setPopupMessage("Success!");
           setPopupVisible(true);
           setScore((prevScore) => prevScore + time);
           splineInstance.setVariables({ level_complete: false });
@@ -120,6 +120,10 @@ const App = () => {
           if (firstFullHeartIndex !== -1) {
             newHearts[firstFullHeartIndex] = false;
             setHearts(newHearts);
+            setFailurePopupVisible(true);
+            setTimeout(() => {
+              setFailurePopupVisible(false);
+            }, 4000);
           }
         }
       });
@@ -145,7 +149,8 @@ const App = () => {
           <Heart key={index} isFull={isFull} />
         ))}
       </div>
-      <Popup message={popupMessage} visible={popupVisible} />
+      <SuccessPopup visible={popupVisible} />
+      <FailurePopup visible={failurePopupVisible} hearts={hearts} />
     </div>
   );
 };

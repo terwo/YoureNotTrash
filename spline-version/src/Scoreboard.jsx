@@ -1,11 +1,10 @@
 import React from 'react';
 import './Scoreboard.css';
 
-const Scoreboard = () => {
+const Scoreboard = ({ score }) => {
   return (
     <div className="scoreboard">
-      <h2>Scoreboard</h2>
-      {/* Add your scoreboard items here */}
+      <p>{score}</p>
     </div>
   );
 };

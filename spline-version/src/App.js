@@ -21,7 +21,8 @@ const App = () => {
       const spline = new Application(canvas);
 
       // Generate random character variables
-      const randomValue = Math.floor(Math.random() * 3) * 100 + 100;
+      // const randomValue = Math.floor(Math.random() * 3) * 100 + 100;
+      const randomValue = 100;
       setTargetCharacter(randomValue);
 
       let newNewspaper = [0, 0, 0];
@@ -56,6 +57,7 @@ const App = () => {
         newspaper_x, newspaper_y, newspaper_z,
         mason_jar_x, mason_jar_y, mason_jar_z,
         garbage_x, garbage_y, garbage_z,
+        level_complete: false,
       });
 
       // Add mouse down event listener -- this is to test the spline event listener -- hopefully can use the trigger area event
@@ -68,11 +70,24 @@ const App = () => {
           }, 3000);
         }});
       // Get the Spline variables after 10 seconds have passed
-      setTimeout(() => {
-        const variables = spline.getVariables();
-        console.log(variables);
-      }, 10000);
-    };
+      // setTimeout(() => {
+      //   const variables = spline.getVariables();
+      //   console.log(variables);
+      // }, 10000);
+
+      spline.addEventListener("collision", (e) => {
+        console.log("collision even detected");
+        console.log("level complete: "+ spline.getVariable("level_complete"));
+        if (spline.getVariable("level_complete")) {
+          // spline.stop();
+          spline.emitEvent("mouseUp", "clock");
+          // spline.play();
+          console.log("reset emitted");
+        }
+      });
+      
+  };
+
 
     preloadScene();
 

@@ -27,12 +27,12 @@ const App = () => {
     console.log(randomValue);
 
     if (randomValue === NEWSPAPER_FLAG) {
-      setNewspaper([3.11, 3.07, 3.06]);
+      setNewspaper([2.6, 2.7, 2.51]);
       setMasonJar([0, 0, 0]);
       setCan([0, 0, 0]);
     } else if (randomValue === MASON_JAR_FLAG) {
       setNewspaper([0, 0, 0]);
-      setMasonJar([Math.random() * 10, Math.random() * 10, Math.random() * 10]);
+      setMasonJar([2.4, 2.4, 2.4]);
       setCan([0, 0, 0]);
     } else {
       setNewspaper([0, 0, 0]);

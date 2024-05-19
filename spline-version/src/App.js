@@ -5,6 +5,7 @@ import Scoreboard from "./Scoreboard";
 import Timer from "./Timer";
 import Popup from "./Popup";
 import Heart from "./Heart";
+import StartMenu from "./StartMenu";
 
 const App = () => {
   const [time, setTime] = useState(120); // Start from 2 minutes
@@ -17,6 +18,7 @@ const App = () => {
   const [popupMessage, setPopupMessage] = useState("");
   const [splineInstance, setSplineInstance] = useState(null); // Store the Spline instance
   const [hearts, setHearts] = useState([true, true, true]); // Start with 3 full hearts
+  const [isGameStarted, setIsGameStarted] = useState(false); // Manage the start menu visibility
 
   const NEWSPAPER_FLAG = 200;
   const MASON_JAR_FLAG = 300;
@@ -46,20 +48,22 @@ const App = () => {
   };
 
   useEffect(() => {
-    startNewLevel(); // Start the first level
+    if (isGameStarted) {
+      startNewLevel(); // Start the first level
 
-    const timer = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime === 0) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
+      const timer = setInterval(() => {
+        setTime((prevTime) => {
+          if (prevTime === 0) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+      return () => clearInterval(timer);
+    }
+  }, [isGameStarted]);
 
   useEffect(() => {
     if (splineInstance) {
@@ -129,6 +133,7 @@ const App = () => {
 
   return (
     <div className="container">
+      {!isGameStarted && <StartMenu onStart={() => setIsGameStarted(true)} />}
       <Spline
         scene="https://prod.spline.design/QIhWCVfzQaL7jMhB/scene.splinecode"
         onLoad={onLoad}

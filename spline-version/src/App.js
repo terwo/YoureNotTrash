@@ -20,6 +20,7 @@ const App = () => {
   const [splineInstance, setSplineInstance] = useState(null); // Store the Spline instance
   const [hearts, setHearts] = useState([true, true, true]); // Start with 3 full hearts
   const [isGameStarted, setIsGameStarted] = useState(false); // Manage the start menu visibility
+  const [points, setPoints] = useState(0); // Points earned in current level
 
   const NEWSPAPER_FLAG = 200;
   const MASON_JAR_FLAG = 300;
@@ -99,6 +100,7 @@ const App = () => {
           // splineInstance.stop();
           // Display success message
           setPopupVisible(true);
+          setPoints(time); // Set points to the remaining time
           setScore((prevScore) => prevScore + time);
           splineInstance.setVariables({ level_complete: false });
 
@@ -149,7 +151,7 @@ const App = () => {
           <Heart key={index} isFull={isFull} />
         ))}
       </div>
-      <SuccessPopup visible={popupVisible} />
+      <SuccessPopup visible={popupVisible} points={points} />
       <FailurePopup visible={failurePopupVisible} hearts={hearts} />
     </div>
   );

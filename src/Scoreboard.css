@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,900;1,900&display=swap");
+
+.scoreboard {
+  position: absolute;
+  bottom: 12px;
+  left: 60px;
+  width: 200px;
+  height: 200px;
+  background: url("./assets/scoreboard.png") no-repeat center/contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 40px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}

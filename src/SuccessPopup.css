@@ -19,12 +19,14 @@
 
 .success-popup-points {
   font-family: "Rubik", sans-serif;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
-  color: white;
-  margin-top: 20px;
+  color: #6f2b1f;
+  margin-top: 5px;
+  margin-left: 90px;
   display: flex;
   position: absolute;
+  overflow: visible;
   top: 50%;
   transform: translateY(-50%);
 }

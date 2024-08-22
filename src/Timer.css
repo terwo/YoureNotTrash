@@ -2,10 +2,10 @@
 
 .timer {
   position: absolute;
-  bottom: 20px;
-  right: 8px;
-  width: 360px; /* Adjust the width as needed */
-  height: 220px; /* Adjust the height as needed */
+  bottom: -20px;
+  right: 0px;
+  width: 380px; /* Adjust the width as needed */
+  height: 240px; /* Adjust the height as needed */
   background: url("./assets/timer.png") no-repeat center;
   background-size: contain; /* Ensures the image scales to fit the container while maintaining aspect ratio */
   display: flex;
